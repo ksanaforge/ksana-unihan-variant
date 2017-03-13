@@ -1,16 +1,7 @@
 var fs=require("fs");
 var unihanvariants=require("./unihanvariants");//created by gen.js
-
-var code2str=function(value){
-	var out="";
-	if (value > 0xFFFF) {
-          value -= 0x10000;
-          out=String.fromCharCode(((value >>>10) & 0x3FF) | 0xD800);
-          value = 0xDC00 | (value & 0x3FF);
-  }
-  out+=String.fromCharCode(value);
-  return out;
-}    
+const code2str=require("./code2str");
+ /*this code is  not working because unihanvariants.js format changed*/
 
 var removeDuplicate=function(){
 	for (var i in variants) {
@@ -32,6 +23,8 @@ var removeEmpty=function(variants){
 			if (variants[i].length) {
 				variants[i].unshift(i);
 				out.push(variants[i]);
+			} else {
+				out.push(variants[i])
 			}
 	}
 	return out;
@@ -40,8 +33,9 @@ var convertoString=function(arr,charset){
 	var out=[];
 	for (var i=0;i<arr.length;i++) {
 		var t="",count=0;
+		if (typeof arr[i]!=="object") arr[i]=[arr[i]]
 		for (var j=0;j<arr[i].length;j++)	{
-			var ch=code2str(parseInt(arr[i][j],16));
+			var ch=arr[i][j];
 			if (j&&charset && charset.indexOf(ch)==-1) continue;
 			t+=ch;
 			count++;
@@ -61,6 +55,7 @@ var gen=function(charset){
 if (process.argv[1].indexOf("index")>-1){
 	var str=gen();
 	console.log("str length",str.length)
+	console.log("write to variant.js")
 	fs.writeFileSync("variant.js",'module.exports="'+str.join(",")+'"',"utf8");	
 }
 module.exports=gen;

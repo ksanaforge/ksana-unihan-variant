@@ -2,6 +2,7 @@ const fs=require("fs");
 var lines=fs.readFileSync("./Unihan_Variants.txt","utf8").split(/\r?\n/);
 const startline=19;
 var variants={};//key: char, value:array of variants
+const code2str=require("./code2str");
 
 var buildMap=function(){
 	for (var i=startline;i<lines.length;i++){
@@ -9,7 +10,7 @@ var buildMap=function(){
 		if (fields.length!==3)continue;
 		if (fields[1]=="kSpecializedSemanticVariant")continue;
 			//fields[1]=="kSimplifiedVariant")continue;
-		var key=fields[0].substr(2);
+		var key=code2str(fields[0].substr(2));
 
 		var v=fields[2].substr(2,5);
 		if (v[4]=="<")v=v.substr(0,4);
@@ -17,7 +18,12 @@ var buildMap=function(){
 		if (!variants[key]) {
 			variants[key]=[];
 		}
-		if (variants[key].indexOf(v)==-1) variants[key].push(v);
+		if (variants[key].indexOf(v)==-1) variants[key].push(code2str(v));
+	}
+	for (var i in variants){
+		if (variants[i].length==1) {
+			variants[i]=variants[i][0];
+		}
 	}
 }
 buildMap();
