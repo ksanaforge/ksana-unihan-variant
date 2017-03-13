@@ -18,12 +18,15 @@ var buildMap=function(){
 		if (!variants[key]) {
 			variants[key]=[];
 		}
-		if (variants[key].indexOf(v)==-1) variants[key].push(code2str(v));
+		if (variants[key].indexOf(v)==-1) {
+			const vv=code2str(v);
+			if (variants[key].indexOf(vv)==-1) variants[key].push(vv);
+		}
 	}
 	for (var i in variants){
 		if (variants[i].length==1) {
 			variants[i]=variants[i][0];
-		}
+		} ..
 	}
 }
 buildMap();

@@ -1,8 +1,9 @@
 const unihanvariants=require("./unihanvariants"); //run gen to get the file
 const expandVariant=function(ch){
-	var out=[ch];
-
 	const s=unihanvariants[ch];
+	if (!s)return ch;//no variants
+	//most characters without variants will not create array
+	var out=[ch];
 	if (s) {
 		if (typeof s=="string") {
 			out.push(s);
@@ -10,7 +11,6 @@ const expandVariant=function(ch){
 			out=out.concat(s);
 		}
 	}
-
 	for (var i=0;i<out.length;i++) {
 		const s2=unihanvariants[out[i]];
 		if (s2) {
@@ -29,7 +29,8 @@ const test=function(){
 	const c1=expandVariant("戶");
 	const c2=expandVariant("户");
 	const c3=expandVariant("戸");
-	console.log(c1,c2,c3);
+	const c4=expandVariant("的");
+	console.log(c1,c2,c3,c4);
 }
-test();
+//test();
 module.exports={expandVariant:expandVariant}
